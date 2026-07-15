@@ -1,0 +1,1 @@
+document.querySelectorAll('.grid img').forEach(i=>i.onclick=()=>{let o=document.createElement('div');o.style='position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center';o.innerHTML='<img src="'+i.src+'" style="max-width:90%;max-height:90%;border-radius:12px">';o.onclick=()=>o.remove();document.body.appendChild(o)});
