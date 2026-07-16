@@ -1,0 +1,237 @@
+<!doctype html>
+<!--
+  ★ 이 파일로 새 글 만드는 방법:
+  1. 이 파일을 복사해서 이름을 바꿉니다 (예: 2026-07-여름밤.html)
+  2. <title> 과 본문을 고칩니다
+  3. data/posts.js 목록 맨 위에 한 덩어리 추가합니다:
+
+     {
+       title:   "여름밤의 기록",
+       href:    "writing/2026-07-여름밤.html",
+       date:    "2026-07-16",
+       tags:    ["단편"],
+       summary: "한 줄 소개",
+     },
+
+     ※ 경로를 적는 칸 이름은 href 입니다 (path 아님). 틀리면 링크가 안 걸립니다.
+
+  이 페이지는 쓸 수 있는 서식(.wr-*)을 전부 시연합니다.
+  아래 예시를 지우고 본문을 쓰되, 쓰고 싶은 서식은 통째로 복사해서 쓰세요.
+
+  기억할 것:
+  - 이 파일은 writing/ 폴더 안에 있으므로 모든 경로가 ../ 로 시작합니다.
+    글을 writing/ 안에 두는 한 그대로 두면 됩니다.
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>예시 글</title>
+<meta name="description" content="사건일지 양식의 예시 글입니다.">
+
+<!-- 첫 페인트 전 테마 적용 (index.html과 동일) -->
+<script>
+(function () {
+  try {
+    var o = JSON.parse(localStorage.getItem('hada:v1:overrides') || '{}');
+    var t = (o.theme && o.theme.preset) || null;
+    if (!t) {
+      t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'classic';
+    }
+    document.documentElement.dataset.theme = t;
+  } catch (e) { }
+})();
+</script>
+
+<!-- Pretendard 동적 서브셋 -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+
+<!-- 세피아 테마용 명조체: 이 페이지만 추가 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap">
+
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/writing.css">
+</head>
+
+<body>
+
+<a class="skip-link" href="#main">본문 바로가기</a>
+
+<!-- ======================= 네비 ======================= -->
+<header class="nav" id="nav">
+  <div class="nav__inner wrap">
+    <a class="nav__logo" href="../index.html#top">HADA</a>
+    <nav class="nav__links" aria-label="주요 메뉴">
+      <a href="../index.html#gallery">갤러리</a>
+      <a href="../index.html#writing">글</a>
+      <a href="../index.html#about">소개</a>
+      <a href="../index.html#links">링크</a>
+    </nav>
+    <button class="nav__settings" id="settings-open" type="button" aria-label="설정 열기">
+      <span aria-hidden="true">⚙</span>
+      <span class="nav__badge" id="settings-badge" hidden></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <article class="wr-body">
+
+    <!-- 문패: 사건번호 + 제목 -->
+    <div class="wr-title">
+      <span class="wr-title__no">CASE NO. 2026-0716</span>
+      여름밤 아파트의 기묘한 사건
+    </div>
+
+    <!-- 첫 번째 장면 구분 -->
+    <div class="wr-sub">목격</div>
+
+    <p>
+      그 날 밤 11시 47분, 14층 복도에서 <span class="wr-hl">희한한 소리</span>가 났다.
+      정확히는 <span class="wr-wavy">무엇도 아닌 소리</span>였다.
+      <button class="wr-spoiler" type="button" aria-expanded="false">더 이상 들을 수 없는 음역대</button>였던 것 같다.
+    </p>
+
+    <p>
+      나는 그 밤 <span class="wr-code">[증거-A]</span>
+      보안 카메라 영상을 확인했다. 복도는 비었다.
+      지난 세 시간도, 지난 열 시간도.
+    </p>
+
+    <!-- 포스트잇: 사실성 강화용 메모 -->
+    <aside class="wr-sticky">
+      누군가는 이걸 그냥 건물음이라고 했다.
+      신축 아파트에는 흔하다고.
+      하지만 이 건물은 지었지 7년.
+    </aside>
+
+    <!-- 두 번째 장면 구분 -->
+    <div class="wr-sub">증거</div>
+
+    <!-- 인용: 기록물 참조 -->
+    <blockquote class="wr-quote">
+      <span class="wr-code">[기록-01]</span> 2026-07-14 23:47 신고 접수.
+      신고자: 미상, 통화 시간 12초, 음성 파일 손상.
+      <cite>관할 경찰서 접수 일지</cite>
+    </blockquote>
+
+    <p>
+      기록은 여기까지다. <span class="wr-small">(또는 우리가 접근할 수 있는 것은)</span>
+      다만 그 밤 이후로 14층 주민들에게 <span class="wr-wavy">작은 변화</span>가 생겼다.
+    </p>
+
+    <!-- 로그: 시간 기록 -->
+    <pre class="wr-log">
+<time>2026-07-14 23:47:03</time> <span class="wr-log__k">ANOMALY</span> Frequency spike detected
+<time>2026-07-14 23:47:15</time> Signal lost
+<time>2026-07-15 08:34:22</time> Building subsystem check: nominal
+<time>2026-07-16 02:19:44</time> <span class="wr-log__k">WARNING</span> Elevator 3 idle for 847 minutes
+    </pre>
+
+    <!-- 세 번째 장면 구분 (빈 것) -->
+    <div class="wr-sub"></div>
+
+    <!-- 시스템 안내 -->
+    <p class="wr-system">이 사건은 현재 조사 중입니다</p>
+
+    <p>
+      주민 인터뷰는 불가능했다.
+      대관리사는 이 사건 자체를 부인했다.
+      그리고 어제, 14층은 조용해졌다.
+    </p>
+
+    <!-- 경고 -->
+    <div class="wr-warn">
+      <span class="wr-warn__title">기록 불가 항목</span>
+      <p>다음 내용은 공식 기록에 남을 수 없습니다: 복도 모니터링 카메라 N-4의 최근 10개 프레임이 모두 동일한 이미지를 기록했다는 사실.</p>
+    </div>
+
+    <p>
+      그것은 정지된 장면이었다.
+      정지된 밤이었다.
+      같은 시간, 같은 그림자, 같은 침묵.
+    </p>
+
+    <div class="wr-sub">기록 종료</div>
+
+    <p class="wr-small">
+      사건번호: 2026-0716-APT14F · 상태: 미결(보류) · 최종 갱신: 2026-07-16
+    </p>
+
+  </article>
+
+</main>
+
+<footer class="footer wrap">
+  <div class="chips" id="theme-picker" role="group" aria-label="테마 선택"></div>
+  <p class="footer__copy">© <span id="footer-year"></span> HADA</p>
+</footer>
+
+<!-- BGM 플레이어 (core.js에서 조건부 렌더) -->
+<div class="bgm" id="bgm" hidden>
+  <button class="bgm__toggle" id="bgm-toggle" type="button" aria-label="BGM 재생">
+    <span class="bgm__disc" id="bgm-disc" aria-hidden="true">♪</span>
+  </button>
+  <div class="bgm__body">
+    <p class="bgm__title" id="bgm-title">BGM</p>
+    <div class="bgm__controls">
+      <button id="bgm-prev" type="button" aria-label="이전 곡">⏮</button>
+      <button id="bgm-next" type="button" aria-label="다음 곡">⏭</button>
+      <button id="bgm-repeat" type="button" aria-label="반복 모드">🔁</button>
+      <button id="bgm-shuffle" type="button" aria-label="셔플">🔀</button>
+      <input class="bgm__volume" id="bgm-volume" type="range"
+             min="0" max="1" step="0.05" aria-label="볼륨">
+    </div>
+  </div>
+  <div class="bgm__yt" id="bgm-yt" aria-hidden="true"></div>
+</div>
+
+<!-- 설정 서랍 -->
+<dialog class="drawer" id="settings" aria-label="설정">
+  <div class="drawer__head">
+    <h2 class="drawer__title">설정</h2>
+    <button class="drawer__close" id="settings-close" type="button" aria-label="설정 닫기">✕</button>
+  </div>
+  <div class="drawer__body" id="settings-body"></div>
+  <div class="drawer__foot">
+    <button class="btn btn--ghost" id="settings-reset" type="button">파일 설정으로 되돌리기</button>
+    <button class="btn btn--primary" id="settings-export" type="button">설정 내보내기</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<!-- ======================= 스크립트 =======================
+     이 페이지엔 갤러리·슬라이더·시계가 없으므로 그 JS는 부르지 않습니다.
+     (각 파일은 자기 요소가 없으면 조용히 물러나도록 만들어져 있지만,
+      아예 안 부르면 받아올 파일 자체가 줄어듭니다.)
+
+     설정(⚙)은 부릅니다 — 글을 읽는 중에도 테마를 바꿀 수 있어야 하니까요.
+     특히 세피아 테마는 긴 글을 읽기 편합니다. -->
+<script defer src="../data/config.js"></script>
+
+<script defer src="../js/core.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/bgm.js"></script>
+<script defer src="../js/cursor.js"></script>
+<script defer src="../js/settings.js"></script>
+
+<!-- 스포일러 클릭 핸들러: 이 페이지 전용 (글마다 필요할 수 있으니 개별 파일에) -->
+<script>
+// 스포일러 버튼을 클릭하면 내용을 드러냅니다.
+// 개별 글 파일에 있으므로 다른 곳에서 공유하지 않습니다.
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('wr-spoiler')) {
+    var isOpen = e.target.classList.toggle('is-open');
+    e.target.setAttribute('aria-expanded', String(isOpen));
+  }
+});
+</script>
+
+</body>
+</html>

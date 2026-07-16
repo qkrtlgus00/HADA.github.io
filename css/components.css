@@ -1,0 +1,1127 @@
+/* ===========================================================================
+   components.css — 컴포넌트 스타일 (유리서랍)
+   ---------------------------------------------------------------------------
+   ★ 이 파일의 규칙: 색·둥글기·간격·시간·그림자는 전부 var(--토큰)으로만 씁니다.
+     숫자를 직접 박으면 세 테마 중 두 개에서 깨집니다.
+     예외는 딱 하나 — 스크림(어두운 반투명 막) 위에 얹는 글자·아이콘의 #fff.
+     스크림은 모든 테마에서 어둡기 때문에 흰 글자가 항상 안전합니다.
+
+   불러오는 순서: tokens.css → base.css → components.css
+   반응형 분기점: 480 / 768 / 1024 (모바일 우선, min-width만 사용)
+   =========================================================================== */
+
+/* ---------- hidden 속성은 무조건 이긴다 ----------
+   히어로·위젯·BGM처럼 display를 flex/grid로 바꾼 요소도
+   hidden 속성이 붙어 있는 동안엔 반드시 사라져야 합니다.
+   JS가 hidden을 떼기 전까지는 그 무엇도 이 규칙을 못 이깁니다. */
+[hidden] { display: none !important; }
+
+/* ===========================================================================
+   네비 — 상단에 붙어 따라오는 반투명 유리 바
+   =========================================================================== */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 3.5rem;
+}
+
+.nav__logo {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-heading);
+  color: var(--text);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.nav__logo:hover { color: var(--accent-strong); }
+
+/* 좁은 화면에선 메뉴가 한 줄로 옆으로 스크롤됩니다.
+   햄버거 메뉴 없음 — JS 없이도 항상 동작하는 게 더 소중합니다. */
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;          /* 파이어폭스 스크롤바 숨김 */
+}
+.nav__links::-webkit-scrollbar { display: none; }  /* 크롬·사파리 스크롤바 숨김 */
+
+.nav__links a {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-soft);
+  white-space: nowrap;
+  padding-block: var(--space-2);            /* 손가락이 누르기 쉽게 세로 여유 */
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: transparent;       /* 평소엔 투명, 호버 때 색이 차오름 */
+  text-underline-offset: .4em;
+}
+.nav__links a:hover {
+  color: var(--text);
+  text-decoration-color: var(--accent);
+}
+
+/* 설정 톱니 버튼 — 44px 이상이어야 손끝으로 편하게 누릅니다 */
+.nav__settings {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  font-size: var(--fs-lg);
+  color: var(--text-soft);
+  transition: color var(--dur-fast) var(--ease-out),
+              background var(--dur-fast) var(--ease-out);
+}
+.nav__settings:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+/* 저장 안 한 변경이 있음을 알리는 분홍 점 */
+.nav__badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--accent-2);
+}
+
+/* ===========================================================================
+   히어로 — 크로스페이드 슬라이드
+   ---------------------------------------------------------------------------
+   비율을 고정(aspect-ratio)해 두면 이미지가 늦게 와도
+   화면이 덜컹 내려앉지 않습니다(레이아웃 시프트 방지).
+   =========================================================================== */
+.hero { margin-top: var(--space-4); }
+
+.hero__viewport {
+  position: relative;
+  aspect-ratio: 4 / 3;                /* 모바일: 좀 더 세로가 긴 비율 */
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--hero-grad);       /* 이미지가 오기 전의 파스텔 그라데이션 */
+}
+
+@media (min-width: 768px) {
+  .hero__viewport { aspect-ratio: 5 / 2; }   /* 넓은 화면: 시원한 와이드 */
+}
+
+.hero__track { position: absolute; inset: 0; }
+
+/* 슬라이드는 전부 겹쳐 쌓고 투명도로만 교차합니다 */
+.hero__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;               /* 안 보이는 슬라이드의 링크는 못 누르게 */
+  transition: opacity var(--dur-hero) var(--ease-in-out);
+}
+.hero__slide.is-on {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hero__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: #fff;                        /* 스크림 위 글자 — 예외적 흰색 */
+  text-decoration: none;
+}
+
+.hero__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 캡션 — 아래쪽 어두운 스크림 위에 얹힘.
+   스크림 토큰이 모든 테마에서 어둡기를 보장하므로 글자는 항상 #fff. */
+.hero__caption {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: var(--space-7) var(--space-5) var(--space-6);
+  background: linear-gradient(transparent, var(--scrim));
+  color: #fff;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-heading);
+  color: #fff;
+}
+
+.hero__body {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: #fff;
+  opacity: .85;
+}
+
+/* 좌우 화살표 — 평소엔 숨고, 히어로에 마우스를 올리거나
+   키보드 포커스가 닿으면 나타납니다 */
+.hero__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--scrim);
+  color: #fff;                        /* 스크림 위 아이콘 — 예외적 흰색 */
+  font-size: var(--fs-xl);
+  line-height: var(--lh-tight);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.hero__arrow--prev { left: var(--space-3); }
+.hero__arrow--next { right: var(--space-3); }
+
+.hero:hover .hero__arrow,
+.hero__arrow:focus-visible { opacity: 1; }
+
+/* 마우스가 없는 기기(터치)에선 호버가 없으니 항상 보여줍니다 */
+@media (hover: none) {
+  .hero__arrow { opacity: 1; }
+}
+
+/* 점 내비게이션 — 현재 슬라이드는 알약처럼 늘어납니다 */
+.hero__dots {
+  position: absolute;
+  left: 50%;
+  bottom: var(--space-3);
+  transform: translateX(-50%);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hero__dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border-radius: var(--radius-full);
+  background: #fff;                   /* 스크림 위 — 예외적 흰색 */
+  opacity: .5;
+  transition: width var(--dur-med) var(--ease-out),
+              opacity var(--dur-med) var(--ease-out);
+}
+.hero__dots button.is-on {
+  width: 20px;
+  opacity: 1;
+}
+
+/* ===========================================================================
+   프로필 — 히어로 아래로 반쯤 걸친 동그란 아바타 (갠홈의 클래식)
+   =========================================================================== */
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-block: 0 var(--space-6);
+}
+
+.profile__avatar {
+  position: relative;
+  z-index: 1;
+  width: 6rem;
+  height: 6rem;
+  object-fit: cover;
+  border-radius: var(--radius-full);
+  border: 3px solid var(--surface);
+  background: var(--surface-2);       /* 이미지 로딩 전 빈 원 */
+  box-shadow: var(--shadow-1);
+  margin-top: -3rem;                  /* ★ 히어로 밑단을 살짝 덮는 그 느낌 */
+}
+
+/* 히어로가 숨어 있으면(슬라이드 없음) 끌어올리지 않고 위 여백을 줍니다 */
+.hero[hidden] + .profile { padding-top: var(--space-6); }
+.hero[hidden] + .profile .profile__avatar { margin-top: 0; }
+
+.profile__name {
+  margin-top: var(--space-3);
+  font-size: var(--fs-2xl);
+}
+
+.profile__meta {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.profile__dot {
+  color: var(--text-faint);
+  margin-inline: var(--space-1);
+}
+
+.profile__bio {
+  margin-top: var(--space-3);
+  max-width: var(--container-narrow);
+  color: var(--text-soft);
+}
+
+/* ===========================================================================
+   위젯 — 시계와 달력 카드
+   =========================================================================== */
+.widgets {
+  display: grid;
+  grid-template-columns: 1fr;         /* 모바일: 세로로 쌓기 */
+  gap: var(--space-4);
+  margin-block: var(--space-2) var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .widgets { grid-template-columns: 1fr 1fr; }   /* 넓으면 나란히 */
+}
+
+.widget {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  padding: var(--space-5);
+  text-align: center;
+}
+
+.widget--clock {
+  display: grid;
+  place-content: center;              /* 달력과 키가 맞도록 세로 중앙 정렬 */
+}
+
+.clock__time {
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-heading);
+}
+
+.clock__meta {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.calendar__title {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  margin-bottom: var(--space-3);
+}
+
+.calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-1);
+  font-size: var(--fs-sm);
+}
+
+/* 아래 달력 칸들은 widgets.js가 만들어 넣습니다 */
+.calendar__head {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-faint);
+  padding-block: var(--space-1);
+}
+
+.calendar__day {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: var(--radius-full);
+}
+
+/* 한국 달력의 약속: 일요일은 빨강, 토요일은 파랑 */
+.calendar__day.is-sun { color: var(--danger); }
+.calendar__day.is-sat { color: var(--accent-strong); }
+
+/* 오늘 — 은은한 원으로 채움 (요일색보다 나중에 써서 오늘이 이깁니다) */
+.calendar__day.is-today {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-weight: var(--fw-bold);
+}
+
+.calendar__day.is-blank { /* 빈 칸 — 아무것도 그리지 않음 */ }
+
+/* ===========================================================================
+   섹션 공통 — 제목, 산문, 빈 상태
+   =========================================================================== */
+.section { padding-block: var(--space-6); }
+
+@media (min-width: 768px) {
+  .section { padding-block: var(--space-7); }
+}
+
+.section__title { margin-bottom: var(--space-5); }
+
+/* 제목 밑의 짧은 분홍 밑줄 — 일기장 견출지 느낌 */
+.section__title::after {
+  content: "";
+  display: block;
+  width: var(--space-6);
+  height: var(--space-1);
+  margin-top: var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--accent-2);
+}
+
+/* 소개글 같은 산문 영역 */
+.prose { max-width: var(--container-narrow); }
+.prose > * + * { margin-top: var(--space-4); }
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: .9em;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  padding: .1em .4em;
+}
+
+/* 아직 내용이 없을 때의 점선 상자 */
+.empty {
+  text-align: center;
+  font-size: var(--fs-sm);
+  color: var(--text-faint);
+  padding: var(--space-7) var(--space-4);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+/* ===========================================================================
+   칩 — 태그 필터와 테마 선택에 함께 쓰는 알약 버튼
+   =========================================================================== */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.chips:empty { display: none; }       /* 칩이 없으면 빈 줄도 남기지 않음 */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-medium);
+  color: var(--text-soft);
+  transition: background var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out);
+}
+.chip:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+}
+.chip.is-on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+/* 테마 미리보기 색 동그라미 — 색은 JS가 인라인으로 칠합니다 */
+.chip__swatch {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-strong);
+}
+
+/* ===========================================================================
+   갤러리 — 정사각 썸네일 격자
+   =========================================================================== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));  /* 모바일 */
+  gap: var(--space-4);
+}
+
+@media (min-width: 480px) {
+  .grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+}
+
+.card-img {
+  background: var(--surface-2);       /* 이미지가 늦게 오는 동안의 바탕색 */
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-1);
+}
+
+/* 이미지를 감싼 맨몸 버튼 — 버튼 티를 전부 벗김 */
+.card-img__btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+}
+/* 포커스 링이 overflow:hidden에 잘리지 않도록 안쪽으로 그립니다 */
+.card-img__btn:focus-visible { outline-offset: -3px; }
+
+.card-img__btn img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  transition: transform var(--dur-med) var(--ease-out);
+}
+
+/* 살짝 확대 — 카드에 마우스가 오거나 안쪽에 포커스가 있을 때 */
+.card-img:hover .card-img__btn img,
+.card-img:focus-within .card-img__btn img {
+  transform: scale(1.03);
+}
+
+.card-img__cap {
+  padding: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+/* ===========================================================================
+   라이트박스 — 그림 크게 보기 (<dialog>)
+   =========================================================================== */
+.lightbox {
+  /* 브라우저 기본 dialog 껍데기를 벗기고 화면 전체를 씁니다 */
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  z-index: var(--z-lightbox);
+}
+
+.lightbox[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: hada-lightbox-in var(--dur-slow) var(--ease-out);
+}
+
+.lightbox::backdrop {
+  background: var(--scrim);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.lightbox__figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.lightbox__img {
+  max-width: min(90vw, 1200px);
+  max-height: 85vh;
+  width: auto;
+  height: auto;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-3);
+  background: var(--surface-2);
+}
+
+.lightbox__caption {
+  color: #fff;                        /* 스크림 배경 위 — 예외적 흰색 */
+  font-size: var(--fs-sm);
+  text-align: center;
+  padding-inline: var(--space-4);
+}
+
+/* 닫기·이전·다음 — 스크림색 원 위의 흰 아이콘, 44px 손끝 크기 */
+.lightbox__close,
+.lightbox__nav {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--scrim);
+  color: #fff;                        /* 예외적 흰색 */
+  line-height: var(--lh-tight);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.lightbox__close:hover,
+.lightbox__nav:hover { transform: scale(1.08); }
+
+.lightbox__close {
+  top: var(--space-4);
+  right: var(--space-4);
+  font-size: var(--fs-base);
+}
+
+.lightbox__nav {
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--fs-xl);
+}
+.lightbox__nav:hover { transform: translateY(-50%) scale(1.08); }
+.lightbox__nav--prev { left: var(--space-4); }
+.lightbox__nav--next { right: var(--space-4); }
+
+/* ===========================================================================
+   링크 카드 — 트위터·픽시브 같은 바깥 링크 모음
+   =========================================================================== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  color: var(--text);
+  text-decoration: none;
+  transition: transform var(--dur-med) var(--ease-out),
+              box-shadow var(--dur-med) var(--ease-out),
+              border-color var(--dur-med) var(--ease-out),
+              background var(--dur-med) var(--ease-out);
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-2);
+  border-color: var(--border-strong);
+}
+.card:active {
+  transform: translateY(-1px);
+  background: var(--surface-3);
+}
+
+.card__icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  font-size: var(--fs-lg);
+}
+
+.card__body { min-width: 0; }
+
+.card__label {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+}
+
+.card__desc {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--text-faint);
+}
+
+/* ===========================================================================
+   창작글 목록 — 가로로 긴 글 카드
+   =========================================================================== */
+.posts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.post {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+  transition: transform var(--dur-med) var(--ease-out),
+              box-shadow var(--dur-med) var(--ease-out),
+              border-color var(--dur-med) var(--ease-out);
+}
+.post:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-2);
+  border-color: var(--border-strong);
+}
+
+.post__link {
+  display: block;
+  padding: var(--space-5);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.post__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-heading);
+}
+
+.post__summary {
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
+.post__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+.post__tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  color: var(--accent-strong);
+}
+
+/* ===========================================================================
+   푸터 — 테마 고르기 칩 + 저작권 한 줄
+   =========================================================================== */
+.footer {
+  margin-top: var(--space-7);
+  padding-block: var(--space-6) var(--space-8);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.footer .chips {
+  justify-content: center;
+  margin-bottom: 0;
+}
+
+.footer__copy {
+  margin-top: var(--space-4);
+  font-size: var(--fs-sm);
+  color: var(--text-faint);
+}
+
+/* ===========================================================================
+   BGM 플레이어 — 오른쪽 아래에 떠 있는 유리 알약
+   =========================================================================== */
+.bgm {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: var(--z-player);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 3rem;
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--surface-2) 85%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-2);
+}
+
+.bgm__toggle {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+}
+
+.bgm__disc {
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: var(--fs-sm);
+  transition: background var(--dur-med) var(--ease-out),
+              color var(--dur-med) var(--ease-out);
+}
+
+/* ★ 회전은 재생 중일 때만. 멈추면 절대 돌지 않습니다.
+   3초짜리 토큰이 없어서 --dur-hero(600ms) × 5로 만들었습니다. */
+.bgm.is-playing .bgm__disc {
+  background: var(--accent-strong);
+  color: var(--on-accent);
+  animation: hada-spin calc(var(--dur-hero) * 5) linear infinite;
+}
+
+/* 모바일 기본: 몸통을 접고 디스크 동그라미만 */
+.bgm__body { display: none; }
+
+@media (min-width: 480px) {
+  .bgm { padding-right: var(--space-4); }
+  .bgm__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+  }
+}
+
+.bgm__title {
+  max-width: 10rem;
+  font-size: var(--fs-xs);
+  color: var(--text-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bgm__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.bgm__controls button {
+  padding: var(--space-1);
+  border-radius: var(--radius-xs);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-tight);
+  color: var(--text-soft);
+  transition: color var(--dur-fast) var(--ease-out),
+              background var(--dur-fast) var(--ease-out);
+}
+.bgm__controls button:hover {
+  color: var(--text);
+  background: var(--surface-3);
+}
+
+.bgm__volume {
+  width: 5rem;
+  margin-left: var(--space-1);
+  accent-color: var(--accent-strong);
+}
+
+/* ★ 유튜브 iframe 자리 — display:none이면 유튜브 API가 재생을 거부합니다.
+   그래서 1px로 줄여서 "있지만 안 보이게" 숨깁니다. 절대 display:none 금지! */
+.bgm__yt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border: 0;
+}
+
+/* ===========================================================================
+   설정 서랍 — 오른쪽에서 스르륵 나오는 <dialog>
+   =========================================================================== */
+.drawer {
+  /* 기본 dialog 껍데기 제거 + 오른쪽 벽에 딱 붙이기 */
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0 0 0 auto;
+  width: min(420px, 100%);
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  border: 0;
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-3);
+}
+
+/* 열리면 세로 3단(머리·몸·발) 기둥으로 — 몸통만 스크롤됩니다 */
+.drawer[open] {
+  display: flex;
+  flex-direction: column;
+  animation: hada-drawer-in var(--dur-slow) var(--ease-out);
+}
+
+.drawer::backdrop { background: var(--scrim); }
+
+.drawer__head {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.drawer__title { font-size: var(--fs-lg); }
+
+.drawer__close {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  color: var(--text-soft);
+  transition: color var(--dur-fast) var(--ease-out),
+              background var(--dur-fast) var(--ease-out);
+}
+.drawer__close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.drawer__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;       /* 끝까지 내려도 뒤 페이지가 안 딸려옴 */
+  padding: var(--space-4) var(--space-5);
+}
+
+.drawer__foot {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border);
+}
+
+/* ===========================================================================
+   설정 폼 부품 — settings.js가 서랍 안을 이 부품들로 조립합니다
+   =========================================================================== */
+
+/* 한 줄 = 왼쪽 라벨 + 오른쪽 컨트롤. 좁으면 자연스럽게 줄바꿈. */
+.field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  padding-block: var(--space-3);
+}
+.field + .field { border-top: 1px solid var(--border); }
+
+.field__label {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text);
+}
+
+.field__hint {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-regular);
+  color: var(--text-faint);
+}
+
+.field__control {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+  max-width: 100%;
+}
+
+/* 체크박스를 토글 스위치로 — 포커스 링은 base.css 전역 규칙이 그려줍니다 */
+.switch {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex-shrink: 0;
+  width: 2.75rem;
+  height: 1.625rem;
+  margin: 0;
+  border-radius: var(--radius-full);
+  background: var(--border-strong);
+  cursor: pointer;
+  transition: background var(--dur-med) var(--ease-out);
+}
+.switch::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: .1875rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  transform: translateY(-50%);
+  transition: transform var(--dur-med) var(--ease-out);
+}
+.switch:checked { background: var(--accent-strong); }
+.switch:checked::before { transform: translateY(-50%) translateX(1.125rem); }
+
+/* 드롭다운 — 화살표는 브라우저 것을 그대로 씁니다(테마는 color-scheme이 처리) */
+.select {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  max-width: 100%;
+}
+
+/* 설정 내보내기 텍스트 상자 — 고정폭 글꼴로 복사하기 좋게 */
+.export-area {
+  width: 100%;
+  height: 14rem;
+  margin-top: var(--space-2);
+  padding: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-heading);
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  resize: vertical;
+}
+
+/* ===========================================================================
+   버튼
+   =========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  text-decoration: none;
+  transition: background var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+}
+.btn:active { transform: translateY(1px); }
+
+.btn--primary {
+  background: var(--accent-strong);
+  color: var(--on-accent);
+}
+.btn--primary:hover {
+  background: color-mix(in srgb, var(--accent-strong) 86%, var(--text));
+  box-shadow: var(--shadow-1);
+}
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-soft);
+}
+.btn--ghost:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+/* ===========================================================================
+   토스트 — 아래 가운데에서 뿅 떠오르는 알림
+   ---------------------------------------------------------------------------
+   주의: display를 여기서 정하지 않습니다.
+   hidden 속성일 땐 맨 위의 [hidden] 규칙이 무조건 이겨야 하기 때문입니다.
+   =========================================================================== */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: var(--space-6);
+  z-index: var(--z-toast);
+  max-width: calc(100vw - var(--space-6));
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-2);
+  font-size: var(--fs-sm);
+  text-align: center;
+  pointer-events: none;               /* 알림이 클릭을 가로막지 않게 */
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition: opacity var(--dur-slow) var(--ease-out),
+              transform var(--dur-slow) var(--ease-out);
+}
+.toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* ===========================================================================
+   넓은 화면(1024px~) — 숨을 곳이 넉넉하니 간격도 넉넉하게
+   =========================================================================== */
+@media (min-width: 1024px) {
+  .grid,
+  .cards,
+  .widgets { gap: var(--space-5); }
+
+  .hero__arrow--prev { left: var(--space-4); }
+  .hero__arrow--next { right: var(--space-4); }
+}
+
+/* ===========================================================================
+   키프레임 모음
+   (움직임 줄이기 설정은 base.css의 전역 규칙이 전부 꺼줍니다)
+   =========================================================================== */
+
+/* BGM 디스크 회전 */
+@keyframes hada-spin {
+  to { transform: rotate(1turn); }
+}
+
+/* 라이트박스 — 살짝 커지며 나타남 */
+@keyframes hada-lightbox-in {
+  from { opacity: 0; transform: scale(.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* 설정 서랍 — 오른쪽에서 스르륵 */
+@keyframes hada-drawer-in {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}

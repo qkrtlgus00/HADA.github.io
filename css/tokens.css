@@ -1,0 +1,279 @@
+/* ===========================================================================
+   tokens.css — 디자인 토큰 + 테마 프리셋
+   ---------------------------------------------------------------------------
+   ★ 이 파일의 규칙: 테마 프리셋은 "토큰만" 덮어씁니다.
+     프리셋 블록 안에 .card 같은 컴포넌트 셀렉터를 절대 넣지 마세요.
+     프리셋으로 못 바꾸는 게 있으면 → 컴포넌트를 고치지 말고 토큰을 추가하세요.
+
+   반응형 분기점(BP): 480 / 768 / 1024
+     (미디어쿼리는 CSS 변수를 읽지 못해서 토큰으로 만들 수 없습니다. 주석으로 고정.)
+   =========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---------- 색: 바탕과 표면 ---------- */
+  --bg:            #f3f6fb;   /* 페이지 배경 */
+  --bg-soft:       #e9eff8;   /* 교차 섹션 띠 */
+  --surface:       #ffffff;   /* 카드, 네비, 플레이어 */
+  --surface-2:     #f6f9fd;   /* 중첩 패널, 인라인 코드 배경, 인용 배경 */
+  --surface-3:     #edf2f9;   /* 눌린 상태, 표 줄무늬 */
+
+  /* ---------- 색: 글자 ---------- */
+  --text:          #333d4b;   /* 본문. surface 대비 11.0:1 */
+  --text-soft:     #4e5a6b;   /* 보조. 7.0:1 */
+  --text-faint:    #66707e;   /* 캡션/시각. surface 5.0:1, bg 4.6:1 */
+
+  /* ---------- 색: 강조 ---------- */
+  --accent:        #5a8fe0;   /* 장식/큰 UI 전용 (3.3:1 — 본문 글자에 쓰지 말 것) */
+  --accent-strong: #2f6bcc;   /* 링크와 강조 글자. 5.1:1 */
+  --accent-soft:   #e3edfb;   /* 칩 배경, 호버 워시 */
+  --on-accent:     #ffffff;   /* accent 위에 얹는 글자 */
+  --accent-2:      #e08bb0;   /* 짝꿍 분홍 — 장식용(물결 밑줄, 점) */
+  --accent-2-soft: #fbe7f0;
+
+  /* ---------- 색: 선과 포커스 ---------- */
+  --border:        #dde5f0;
+  --border-strong: #c2cfdf;
+  --focus-ring:    #2f6bcc;
+
+  /* ---------- 색: 의미 상태 ---------- */
+  --ok:            #1a7f37;  --ok-soft:     #e3f3e8;
+  --warn:          #9a6700;  --warn-soft:   #fff6e0;
+  --danger:        #b3261e;  --danger-soft: #fbe9e7;
+  --info:          #2f6bcc;  --info-soft:   #e3edfb;
+
+  /* ---------- 색: 창작글 서식 전용 ---------- */
+  --hl:            #fff3a6;  /* 형광펜. text 대비 9.8:1 */
+  --spoiler-bg:    #333d4b;
+  --sticky-bg:     #fff8c9;  --sticky-text: #5c5222;
+  --log-bg:        #232936;  --log-text:    #d7deea;
+  --log-muted:     #8b95a7;  --log-accent:  #8fb8f2;
+
+  /* ---------- 색: 장식 ---------- */
+  --hero-grad:     linear-gradient(135deg, #c7ddfa 0%, #e8e4fb 55%, #fcdfec 100%);
+  --scrim:         rgba(23, 30, 42, .62);
+  --selection:     #cfe0f7;
+
+  /* ---------- 그림자 (회색 아닌 푸른 기 — 납작한 회색 그림자는 싸구려로 보임) --- */
+  --shadow-1: 0 2px 8px rgba(30,64,120,.06), 0 8px 24px rgba(30,64,120,.08);
+  --shadow-2: 0 4px 12px rgba(30,64,120,.10), 0 16px 40px rgba(30,64,120,.12);
+  --shadow-3: 0 8px 24px rgba(15,30,60,.18), 0 32px 80px rgba(15,30,60,.22);
+
+  /* ---------- 타이포그래피 ---------- */
+  --font-sans:    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+                  "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", system-ui, sans-serif;
+  --font-serif:   "Noto Serif KR", "Nanum Myeongjo", Batang, serif;
+  --font-mono:    ui-monospace, "Cascadia Mono", Consolas, "D2Coding", monospace;
+  --font-display: var(--font-sans);  /* 프리셋이 명조로 바꿀 수 있음 */
+
+  --fs-xs:   .75rem;     /* 12px  시각, 칩, 사건번호 라벨 */
+  --fs-sm:   .875rem;    /* 14px  캡션, 네비, 메타 */
+  --fs-base: 1rem;       /* 16px→17px 본문 (html 크기 상향, base.css 참고) */
+  --fs-lg:   1.1875rem;  /* 19px  리드 문단, 카드 제목 */
+  --fs-xl:   1.4375rem;  /* 23px  h3 */
+  --fs-2xl:  1.75rem;    /* 28px  h2 / 섹션 제목 */
+  --fs-3xl:  clamp(2rem, 1.5rem + 2.2vw, 2.625rem);  /* h1 / 히어로 */
+
+  --fw-regular: 400;  --fw-medium: 500;  --fw-semibold: 600;  --fw-bold: 700;
+
+  --lh-body:    1.75;   /* 한글 음절 블록은 라틴(1.5)보다 넉넉해야 함 */
+  --lh-heading: 1.35;
+  --lh-tight:   1.2;
+
+  --ls-body:    -0.01em;  /* 한글 기본 자간이 살짝 헐렁함 */
+  --ls-heading: -0.02em;
+  --ls-wide:     0.08em;  /* 모노 라벨 예: "CASE NO. 07" */
+
+  /* ---------- 모양 ---------- */
+  --radius-xs:  6px;
+  --radius-sm:  10px;
+  --radius-md:  14px;   /* 원래 템플릿의 카드 느낌 유지 */
+  --radius-lg:  20px;
+  --radius-full: 999px;
+
+  /* ---------- 간격 (4px 기준) ---------- */
+  --space-1: .25rem;  --space-2: .5rem;  --space-3: .75rem;  --space-4: 1rem;
+  --space-5: 1.5rem;  --space-6: 2rem;   --space-7: 3rem;    --space-8: 4rem;
+  --space-9: 6rem;
+
+  /* ---------- 레이아웃 ---------- */
+  --container:        1080px;  /* 본문 최대 폭 */
+  --container-narrow: 43rem;   /* 창작글 판형 — 한 줄에 한글 34~36자 */
+
+  /* ---------- 모션 ---------- */
+  --dur-fast: 120ms;   /* 링크 밑줄, 포커스 */
+  --dur-med:  200ms;   /* 호버, 스포일러 */
+  --dur-slow: 300ms;   /* 라이트박스, 테마 전환 */
+  --dur-hero: 600ms;   /* 슬라이드 크로스페이드 */
+  --ease-out:    cubic-bezier(.22, 1, .36, 1);
+  --ease-in-out: cubic-bezier(.65, 0, .35, 1);
+
+  /* ---------- 쌓임 순서 ---------- */
+  --z-base: 0;  --z-sticky: 100;  --z-dropdown: 200;
+  --z-player: 300;  --z-lightbox: 400;  --z-toast: 500;
+}
+
+/* ===========================================================================
+   프리셋 1 — 클래식 블루 (기본)
+   "봄 오후의 파스텔 — 원래의 하늘색·분홍을 정돈한 기본 얼굴."
+   본문 대비: #333d4b on #ffffff = 11.0:1
+   위 :root가 곧 이 프리셋입니다. 아래는 표시용 빈 마커.
+   =========================================================================== */
+[data-theme="classic"] { /* :root 기본값 그대로 사용 */ }
+
+/* ===========================================================================
+   프리셋 2 — 모던 다크
+   "새벽의 작업실 — 검정이 아니라 깊은 남색, 그림이 돋보이는 어둠."
+   본문 대비: #e3e8ef on #1c2027 = 13.3:1
+   =========================================================================== */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg:            #14171c;   /* 순검정 아님 — 순검정은 썸네일이 과하게 번쩍임 */
+  --bg-soft:       #181c22;
+  --surface:       #1c2027;
+  --surface-2:     #242a33;   /* 고도(elevation) = 더 밝은 표면, 더 큰 그림자가 아님 */
+  --surface-3:     #2d3440;
+
+  --text:          #e3e8ef;   /* 순백 아님 — 13.3:1, 번짐(halation) 없음 */
+  --text-soft:     #a8b3c1;   /* 7.7:1 */
+  --text-faint:    #8894a6;   /* 5.3:1 */
+
+  --accent:        #5a8fe0;
+  --accent-strong: #7fb0f5;   /* 링크 7.3:1 */
+  --accent-soft:   #22314a;
+  --on-accent:     #10141a;
+  --accent-2:      #f0a5c3;
+  --accent-2-soft: #3a2733;
+
+  --border:        #2c3340;
+  --border-strong: #3b4454;
+  --focus-ring:    #7fb0f5;
+
+  --ok:     #4fbf6b;  --ok-soft:     #1c2f22;
+  --warn:   #d29922;  --warn-soft:   #322a18;   /* warn 글자 surface 대비 6.0:1 */
+  --danger: #f28b82;  --danger-soft: #38211f;
+  --info:   #7fb0f5;  --info-soft:   #22314a;
+
+  --hl:          #4a4423;  /* text 얹었을 때 8.0:1 */
+  --spoiler-bg:  #e3e8ef;  /* 뒤집힘: 어두운 페이지 위 밝은 막대 */
+  --sticky-bg:   #3a3728;  --sticky-text: #efe9c8;
+  --log-bg:      #101318;  --log-text:    #d7deea;
+  --log-muted:   #8b95a7;  --log-accent:  #8fb8f2;
+
+  --hero-grad:  linear-gradient(135deg, #243352 0%, #2e2a4a 55%, #4a2e44 100%);
+  --scrim:      rgba(5, 8, 14, .78);
+  --selection:  #2c4a75;
+
+  /* 다크에서 그림자는 거의 안 보임 — 고도는 surface-2/3 + border가 담당.
+     그림자는 라이트박스/플레이어 분리용으로만 남김. */
+  --shadow-1: 0 1px 2px rgba(0,0,0,.5), 0 0 0 1px var(--border);
+  --shadow-2: 0 4px 16px rgba(0,0,0,.5), 0 0 0 1px var(--border-strong);
+  --shadow-3: 0 12px 48px rgba(0,0,0,.7);
+}
+
+/* ===========================================================================
+   프리셋 3 — 세피아 서고
+   "오후 네 시의 헌책방 — 빛바랜 종이와 인주 도장, 기록물 보관소의 온기."
+   본문 대비: #46392b on #fdf9f0 = 10.6:1
+   =========================================================================== */
+[data-theme="sepia"] {
+  color-scheme: light;
+
+  --bg:            #f5efe4;   /* 오래된 종이 */
+  --bg-soft:       #efe6d6;
+  --surface:       #fdf9f0;
+  --surface-2:     #f3ecdd;
+  --surface-3:     #eae0cc;
+
+  --text:          #46392b;   /* 10.6:1 */
+  --text-soft:     #6b5d4a;   /* 6.1:1 */
+  --text-faint:    #7c6c57;   /* 4.8:1 */
+
+  --accent:        #c96a45;   /* 장식용 시에나 */
+  --accent-strong: #b0452b;   /* 인주(도장) 주홍 — 링크 5.3:1 */
+  --accent-soft:   #f6e2d6;
+  --on-accent:     #fdf9f0;
+  --accent-2:      #4e6e5d;   /* 바랜 송연묵 — 도장, 물결 밑줄 */
+  --accent-2-soft: #e2eae2;
+
+  --border:        #e2d6bf;
+  --border-strong: #cbbb9d;
+  --focus-ring:    #b0452b;
+
+  --ok:     #3f6f4a;  --ok-soft:     #e2ecdf;
+  --warn:   #8a5a00;  --warn-soft:   #f6ecd2;
+  --danger: #a03123;  --danger-soft: #f4e0da;
+  --info:   #5b6c8f;  --info-soft:   #e4e7ee;
+
+  --hl:          #f3df9a;
+  --spoiler-bg:  #46392b;
+  --sticky-bg:   #f9efc4;  --sticky-text: #5c5222;
+  --log-bg:      #2e2820;  --log-text:    #e6ddcb;
+  --log-muted:   #9a8f7c;  --log-accent:  #d8a86a;
+
+  --hero-grad:  linear-gradient(135deg, #ead9bd 0%, #f2e3d0 55%, #e6cfc2 100%);
+  --scrim:      rgba(40, 32, 22, .66);
+  --selection:  #ecd9b4;
+
+  --shadow-1: 0 2px 8px rgba(90,70,40,.08), 0 8px 24px rgba(90,70,40,.10);
+  --shadow-2: 0 4px 12px rgba(90,70,40,.12), 0 16px 40px rgba(90,70,40,.14);
+  --shadow-3: 0 8px 24px rgba(60,45,25,.20), 0 32px 80px rgba(60,45,25,.24);
+
+  --font-display: var(--font-serif);  /* 이 테마에선 제목·문패가 명조로 */
+}
+
+/* ===========================================================================
+   JS 없는 방문자를 위한 다크모드
+   ---------------------------------------------------------------------------
+   theme.js가 data-theme을 붙이기 전/JS가 꺼진 경우에만 적용됩니다.
+   [data-theme]이 하나라도 붙으면 이 블록은 :not()으로 빠집니다.
+   위 dark 프리셋과 값이 중복되지만(약 40줄), JS 없이도 다크가 동작하는 값어치가
+   더 큽니다. dark 프리셋 색을 고치면 여기도 같이 고쳐주세요.
+   =========================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+
+    --bg:            #14171c;
+    --bg-soft:       #181c22;
+    --surface:       #1c2027;
+    --surface-2:     #242a33;
+    --surface-3:     #2d3440;
+
+    --text:          #e3e8ef;
+    --text-soft:     #a8b3c1;
+    --text-faint:    #8894a6;
+
+    --accent:        #5a8fe0;
+    --accent-strong: #7fb0f5;
+    --accent-soft:   #22314a;
+    --on-accent:     #10141a;
+    --accent-2:      #f0a5c3;
+    --accent-2-soft: #3a2733;
+
+    --border:        #2c3340;
+    --border-strong: #3b4454;
+    --focus-ring:    #7fb0f5;
+
+    --ok:     #4fbf6b;  --ok-soft:     #1c2f22;
+    --warn:   #d29922;  --warn-soft:   #322a18;
+    --danger: #f28b82;  --danger-soft: #38211f;
+    --info:   #7fb0f5;  --info-soft:   #22314a;
+
+    --hl:          #4a4423;
+    --spoiler-bg:  #e3e8ef;
+    --sticky-bg:   #3a3728;  --sticky-text: #efe9c8;
+    --log-bg:      #101318;  --log-text:    #d7deea;
+    --log-muted:   #8b95a7;  --log-accent:  #8fb8f2;
+
+    --hero-grad:  linear-gradient(135deg, #243352 0%, #2e2a4a 55%, #4a2e44 100%);
+    --scrim:      rgba(5, 8, 14, .78);
+    --selection:  #2c4a75;
+
+    --shadow-1: 0 1px 2px rgba(0,0,0,.5), 0 0 0 1px var(--border);
+    --shadow-2: 0 4px 16px rgba(0,0,0,.5), 0 0 0 1px var(--border-strong);
+    --shadow-3: 0 12px 48px rgba(0,0,0,.7);
+  }
+}

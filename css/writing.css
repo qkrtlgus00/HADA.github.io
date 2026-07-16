@@ -1,0 +1,322 @@
+/* ===========================================================================
+   writing.css — 창작글·사건일지 서식 (요소 클래스 `.wr-`)
+   ---------------------------------------------------------------------------
+   ★ 절대 규칙: 색·반지름·간격·그림자·기간은 토큰(`var(--name)`)으로만.
+     하드코딩한 값 하나가 세피아 테마 두 개를 깼습니다.
+
+   구조 철칙: 모든 블록은 margin-block, padding, radius 등으로 통일.
+     반복되는 작은 모노 라벨이 사건일지의 "도장 찍힌 서류" 분위기를 만듭니다.
+   =========================================================================== */
+
+/* ---------- 본문 컨테이너 ---------- */
+.wr-body {
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+
+/* ===========================================================================
+   제목·구분 (문패와 장면 나누기)
+   =========================================================================== */
+
+/* 문패: "사건번호"와 제목을 넣는 틀 */
+.wr-title {
+  margin-block: var(--space-5);
+  padding: var(--space-4) var(--space-7);
+  border-radius: var(--radius-sm);
+
+  /* 테두리: 안쪽 1px 선 + 바깥쪽 outline으로 박스 느낌 */
+  border: 1px solid var(--border-strong);
+  outline: 1px solid var(--border);
+  outline-offset: 4px;
+
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-heading);
+}
+
+/* 문패의 문양: 최상단 다이아몬드 */
+.wr-title::before {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-xs);
+  color: var(--accent-2);
+  content: "◆";
+}
+
+/* 사건번호 라벨 (선택) */
+.wr-title__no {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--ls-wide);
+  color: var(--text-faint);
+  margin-bottom: var(--space-3);
+}
+
+/* 장면 나누기: 좌우 그라데이션 선 + 중앙 텍스트 */
+.wr-sub {
+  margin-block: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-sm);
+
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: center;
+
+  font-size: var(--fs-sm);
+  letter-spacing: var(--ls-wide);
+  color: var(--text-faint);
+  text-align: center;
+}
+
+/* 좌우 선: 투명 → 강한 테두리 그라데이션 */
+.wr-sub::before,
+.wr-sub::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-strong));
+}
+
+.wr-sub::after {
+  background: linear-gradient(90deg, var(--border-strong), transparent);
+}
+
+/* 빈 장면 나누기 (텍스트 없을 때) */
+.wr-sub:empty {
+  padding: var(--space-4) var(--space-5);
+  justify-content: center;
+}
+
+.wr-sub:empty::before {
+  flex: none;
+  height: auto;
+  background: none;
+  font-size: var(--fs-xs);
+  color: var(--accent-2);
+  content: "◇";
+  margin: 0;
+}
+
+.wr-sub:empty::after {
+  display: none;
+}
+
+/* ===========================================================================
+   인라인 요소들
+   =========================================================================== */
+
+/* 스포일러: 클릭해서 답을 봅니다 (호버는 모바일 제외 위해 버튼) */
+.wr-spoiler {
+  background: var(--spoiler-bg);
+  color: transparent;
+  user-select: none;
+  border-radius: var(--radius-xs);
+  padding: 0 .25em;
+  transition: background var(--dur-med), color var(--dur-med);
+
+  /* 포커스 링은 base.css에서 받습니다 */
+}
+
+.wr-spoiler:hover {
+  background: color-mix(in srgb, var(--spoiler-bg) 12%, transparent);
+  color: inherit;
+}
+
+.wr-spoiler.is-open {
+  background: color-mix(in srgb, var(--spoiler-bg) 12%, transparent);
+  color: inherit;
+}
+
+/* 형광펜 효과 */
+.wr-hl {
+  background: linear-gradient(transparent 55%, var(--hl) 55%);
+  padding: 0 .1em;
+}
+
+/* 물결 밑줄 */
+.wr-wavy {
+  text-decoration: underline wavy var(--accent-2);
+  text-decoration-thickness: 1px;
+  text-underline-offset: .3em;  /* 한글 받침과 거리 확보 */
+}
+
+/* 작은 톤 (각주·보충) */
+.wr-small {
+  font-size: .85em;
+  color: var(--text-faint);
+}
+
+/* 코드형 표식 (증거 번호 등) */
+.wr-code {
+  font-family: var(--font-mono);
+  font-size: .875em;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  padding: .1em .4em;
+}
+
+/* ===========================================================================
+   블록 요소들 (문단·인용·메모 등)
+   =========================================================================== */
+
+/* 인용: 왼쪽 강조선 + 배경 + 열린 따옴표 */
+.wr-quote {
+  margin-block: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  border-left: 3px solid var(--accent);
+  background: var(--surface-2);
+
+  position: relative;
+  font-style: normal;
+}
+
+/* 열린 따옴표: 좌상단 모서리에 */
+.wr-quote::before {
+  content: """;
+  display: block;
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--fs-3xl);
+  color: var(--accent-soft);
+}
+
+/* 인용 출처 */
+.wr-quote cite {
+  display: block;
+  margin-top: var(--space-3);
+  font-size: var(--fs-sm);
+  color: var(--text-faint);
+}
+
+.wr-quote cite::before {
+  content: "— ";
+}
+
+/* 포스트잇: 아래로 살짝 회전 + 그림자 */
+.wr-sticky {
+  margin-block: var(--space-5);
+  margin-inline: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-sm);
+
+  max-width: 18rem;
+  background: var(--sticky-bg);
+  color: var(--sticky-text);
+  line-height: 1.6;
+  box-shadow: var(--shadow-1);
+
+  /* 정적 회전: reduced-motion도 형태는 유지 */
+  transform: rotate(-1deg);
+
+  /* 접힌 모서리: ::after의 밝기로 어두움 표현 */
+  position: relative;
+}
+
+.wr-sticky::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 2.5rem 2.5rem 0;
+  border-color: transparent var(--sticky-bg) transparent transparent;
+  filter: brightness(.92);
+}
+
+/* 포스트잇 대체 회전 */
+.wr-sticky--alt {
+  transform: rotate(1.2deg);
+}
+
+/* 로그·터미널: 역상, 모노체, 어두운 배경 */
+.wr-log {
+  margin-block: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-sm);
+
+  background: var(--log-bg);
+  color: var(--log-text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1.9;
+}
+
+/* 로그 상단 라벨 */
+.wr-log::before {
+  content: "LOG";
+  display: block;
+  font-size: var(--fs-xs);
+  letter-spacing: var(--ls-wide);
+  color: var(--log-muted);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid color-mix(in srgb, var(--log-muted) 30%, transparent);
+}
+
+/* 로그 시간 표기 */
+.wr-log time {
+  color: var(--log-muted);
+}
+
+/* 로그 키워드 강조 */
+.wr-log__k {
+  color: var(--log-accent);
+}
+
+/* 시스템 안내: 중앙 정렬 알약형 */
+.wr-system {
+  margin-block: var(--space-5);
+  padding: .35em 1.2em;
+
+  display: table;
+  margin-inline: auto;
+  border-radius: var(--radius-full);
+  background: var(--info-soft);
+  color: var(--info);
+  font-size: var(--fs-sm);
+}
+
+.wr-system::before {
+  content: "〔 ";
+}
+
+.wr-system::after {
+  content: " 〕";
+}
+
+/* 경고: 왼쪽 강조선 + warn 색상 */
+.wr-warn {
+  margin-block: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  border-left: 3px solid var(--warn);
+  background: var(--warn-soft);
+
+  /* 본문은 기본 텍스트 색 유지 */
+  color: var(--text);
+}
+
+/* 경고 제목 */
+.wr-warn__title {
+  display: inline;
+  color: var(--warn);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--ls-wide);
+  margin-right: .5em;
+}
+
+.wr-warn__title::before {
+  content: "⚠ ";
+}

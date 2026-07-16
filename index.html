@@ -1,13 +1,224 @@
-<!doctype html><html lang='ko'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>HADA</title><link rel='stylesheet' href='style.css'></head><body>
-<header class='banner'><div class='overlay'></div></header>
-<main class='wrap'>
-<section class='profile'><img src='https://placehold.co/110x110?text=ICON' class='avatar'><div><h1>HADA</h1><p>@hada · Illustrator</p><p>분위기 있는 캐릭터 일러스트</p></div></section>
-<nav><a href='#works'>Works</a><a href='#about'>About</a><a href='#links'>Links</a></nav>
-<section id='works'><h2>Pinned</h2><img class='pin' src='https://placehold.co/1000x520?text=Pinned+Artwork'><h2>Gallery</h2><div class='grid'><img src='https://placehold.co/400?text=1'><img src='https://placehold.co/400?text=2'><img src='https://placehold.co/400?text=3'><img src='https://placehold.co/400?text=4'><img src='https://placehold.co/400?text=5'><img src='https://placehold.co/400?text=6'><img src='https://placehold.co/400?text=7'><img src='https://placehold.co/400?text=8'><img src='https://placehold.co/400?text=9'></div></section>
-<section id='about'><h2>About</h2><p>소개글을 여기에 작성하세요.</p></section>
-<section id='links'><h2>Links</h2>
-<a class='card' href='https://x.com' target='_blank'>𝕏 Twitter</a>
-<a class='card' href='https://crepe.cm' target='_blank'>Crepe</a>
-<a class='card' href='https://pixiv.net' target='_blank'>Pixiv</a>
-<a class='card' href='mailto:you@example.com'>Email</a>
-</section></main><script src='script.js'></script></body></html>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>HADA</title>
+<meta name="description" content="일러스트레이터 하다의 개인 홈페이지">
+
+<!-- OG 카드는 크롤러가 JS 실행 없이 읽습니다. 그래서 손으로 쓰고, URL은 절대 경로여야 합니다.
+     (크롤러는 상대 OG 경로를 신뢰성 있게 해석하지 못합니다.)
+     저장소 이름이 바뀌면 아래 URL 두 줄만 고치면 됩니다. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="HADA">
+<meta property="og:description" content="일러스트레이터 하다의 개인 홈페이지">
+<meta property="og:url" content="https://qkrtlgus00.github.io/HADA/">
+<meta property="og:image" content="https://qkrtlgus00.github.io/HADA/assets/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="assets/img/favicon.png">
+
+<!-- 첫 페인트 전에 테마를 적용합니다. 이게 없으면 다크 사용자에게 흰 화면이 번쩍입니다.
+     defer 스크립트는 너무 늦어서 반드시 여기 인라인이어야 합니다. -->
+<script>
+(function () {
+  try {
+    var o = JSON.parse(localStorage.getItem('hada:v1:overrides') || '{}');
+    var t = (o.theme && o.theme.preset) || null;
+    if (!t) {
+      // 저장된 선택이 없으면 config.js 로딩을 기다리지 않고 시스템 설정을 따릅니다.
+      t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'classic';
+    }
+    document.documentElement.dataset.theme = t;
+  } catch (e) { /* localStorage 차단 시 무시 — CSS 폴백이 받아줍니다 */ }
+})();
+</script>
+
+<!-- Pretendard dynamic-subset: unicode-range로 쪼개져 있어 실제로 쓰는 글자 범위만 받습니다.
+     전체 CJK 파일은 2MB지만 이 방식은 보통 150~300KB. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+
+<body>
+
+<a class="skip-link" href="#main">본문 바로가기</a>
+
+<!-- ======================= 네비 ======================= -->
+<header class="nav" id="nav">
+  <div class="nav__inner wrap">
+    <a class="nav__logo" href="#top">HADA</a>
+    <nav class="nav__links" aria-label="주요 메뉴">
+      <a href="#gallery">갤러리</a>
+      <a href="#writing">글</a>
+      <a href="#about">소개</a>
+      <a href="#links">링크</a>
+    </nav>
+    <button class="nav__settings" id="settings-open" type="button" aria-label="설정 열기">
+      <span aria-hidden="true">⚙</span>
+      <span class="nav__badge" id="settings-badge" hidden></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ======================= 슬라이드 히어로 =======================
+       js/render.js 가 data/config.js 의 slides 배열에서 채웁니다.
+       js/slider.js 가 동작을 붙입니다. 슬라이드가 없으면 계속 hidden. -->
+  <section class="hero" id="top" aria-label="대표 이미지" hidden>
+    <div class="hero__viewport wrap">
+      <div class="hero__track" id="hero-track" aria-live="polite"></div>
+      <button class="hero__arrow hero__arrow--prev" id="hero-prev" type="button" aria-label="이전 슬라이드">‹</button>
+      <button class="hero__arrow hero__arrow--next" id="hero-next" type="button" aria-label="다음 슬라이드">›</button>
+      <div class="hero__dots" id="hero-dots" role="tablist" aria-label="슬라이드 선택"></div>
+    </div>
+  </section>
+
+  <!-- ======================= 프로필 =======================
+       render.js 가 config.profile 로 내용을 덮어씁니다. -->
+  <section class="profile wrap" aria-label="프로필">
+    <img class="profile__avatar" id="profile-avatar"
+         src="assets/img/avatar.png" alt="" width="96" height="96">
+    <h1 class="profile__name" id="profile-name">HADA</h1>
+    <p class="profile__meta">
+      <span id="profile-handle">@hada</span>
+      <span class="profile__dot" aria-hidden="true">·</span>
+      <span id="profile-job">Illustrator</span>
+    </p>
+    <p class="profile__bio" id="profile-bio">분위기 있는 캐릭터 일러스트를 그립니다.</p>
+  </section>
+
+  <!-- ======================= 시계 · 달력 =======================
+       js/widgets.js 가 채웁니다. config.clockCalendar.show 가 false면 숨김. -->
+  <section class="widgets wrap" id="widgets" aria-label="시계와 달력" hidden>
+    <div class="widget widget--clock">
+      <p class="clock__time tabular" id="clock-time">--:--</p>
+      <p class="clock__meta" id="clock-date"></p>
+    </div>
+    <div class="widget widget--calendar">
+      <p class="calendar__title" id="calendar-title"></p>
+      <div class="calendar__grid" id="calendar-grid"></div>
+    </div>
+  </section>
+
+  <!-- ======================= 갤러리 =======================
+       필터 칩은 gallery.js 가 태그 합집합에서 자동 생성합니다. -->
+  <section class="section wrap" id="gallery" aria-labelledby="gallery-h">
+    <h2 class="section__title" id="gallery-h">갤러리</h2>
+    <div class="chips" id="gallery-filters" role="group" aria-label="태그 필터"></div>
+    <div class="grid" id="gallery-grid"></div>
+    <p class="empty" id="gallery-empty" hidden>아직 올린 그림이 없습니다.</p>
+  </section>
+
+  <!-- ======================= 소개 =======================
+       산문이라 손으로 씁니다. 여기를 직접 고치세요. -->
+  <section class="section wrap" id="about" aria-labelledby="about-h">
+    <h2 class="section__title" id="about-h">소개</h2>
+    <div class="prose">
+      <p>소개글을 여기에 작성하세요. 이 부분은 <code>index.html</code>에서 직접 고칩니다.</p>
+    </div>
+  </section>
+
+  <!-- ======================= 창작글 =======================
+       render.js 가 data/posts.js 에서 목록을 만듭니다. 글이 없으면 hidden. -->
+  <section class="section wrap" id="writing" aria-labelledby="writing-h" hidden>
+    <h2 class="section__title" id="writing-h">글</h2>
+    <ul class="posts" id="posts-list" role="list"></ul>
+  </section>
+
+  <!-- ======================= 링크 ======================= -->
+  <section class="section wrap" id="links" aria-labelledby="links-h">
+    <h2 class="section__title" id="links-h">링크</h2>
+    <div class="cards" id="links-grid"></div>
+  </section>
+
+</main>
+
+<footer class="footer wrap">
+  <div class="chips" id="theme-picker" role="group" aria-label="테마 선택"></div>
+  <p class="footer__copy">© <span id="footer-year"></span> HADA</p>
+</footer>
+
+<!-- ======================= 갤러리 라이트박스 =======================
+     <dialog>를 쓰면 포커스 트랩과 Esc 닫기가 공짜입니다. -->
+<dialog class="lightbox" id="lightbox" aria-label="이미지 크게 보기">
+  <button class="lightbox__close" id="lightbox-close" type="button" aria-label="닫기">✕</button>
+  <button class="lightbox__nav lightbox__nav--prev" id="lightbox-prev" type="button" aria-label="이전 이미지">‹</button>
+  <figure class="lightbox__figure">
+    <img class="lightbox__img" id="lightbox-img" src="" alt="">
+    <figcaption class="lightbox__caption" id="lightbox-caption"></figcaption>
+  </figure>
+  <button class="lightbox__nav lightbox__nav--next" id="lightbox-next" type="button" aria-label="다음 이미지">›</button>
+</dialog>
+
+<!-- ======================= BGM 플레이어 =======================
+     ★ 자동재생은 브라우저가 막습니다. 항상 정지 상태로 렌더되고
+       사용자의 첫 조작이 있어야 재생됩니다. -->
+<div class="bgm" id="bgm" hidden>
+  <button class="bgm__toggle" id="bgm-toggle" type="button" aria-label="BGM 재생">
+    <span class="bgm__disc" id="bgm-disc" aria-hidden="true">♪</span>
+  </button>
+  <div class="bgm__body">
+    <p class="bgm__title" id="bgm-title">BGM</p>
+    <div class="bgm__controls">
+      <button id="bgm-prev" type="button" aria-label="이전 곡">⏮</button>
+      <button id="bgm-next" type="button" aria-label="다음 곡">⏭</button>
+      <button id="bgm-repeat" type="button" aria-label="반복 모드">🔁</button>
+      <button id="bgm-shuffle" type="button" aria-label="셔플">🔀</button>
+      <input class="bgm__volume" id="bgm-volume" type="range"
+             min="0" max="1" step="0.05" aria-label="볼륨">
+    </div>
+  </div>
+  <!-- 유튜브 모드용. display:none 이면 IFrame API가 동작하지 않아 1px로 숨깁니다. -->
+  <div class="bgm__yt" id="bgm-yt" aria-hidden="true"></div>
+</div>
+
+<!-- ======================= 설정 서랍 (정적 관리자 페이지) ======================= -->
+<dialog class="drawer" id="settings" aria-label="설정">
+  <div class="drawer__head">
+    <h2 class="drawer__title">설정</h2>
+    <button class="drawer__close" id="settings-close" type="button" aria-label="설정 닫기">✕</button>
+  </div>
+  <div class="drawer__body" id="settings-body"></div>
+  <div class="drawer__foot">
+    <button class="btn btn--ghost" id="settings-reset" type="button">파일 설정으로 되돌리기</button>
+    <button class="btn btn--primary" id="settings-export" type="button">설정 내보내기</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<noscript>
+  <p class="hada-error wrap">
+    <strong>자바스크립트가 꺼져 있습니다.</strong>
+    갤러리·슬라이드·BGM 등 대부분의 기능이 동작하지 않습니다.
+  </p>
+</noscript>
+
+<!-- ======================= 스크립트 =======================
+     ★ ES 모듈이 아니라 defer 일반 스크립트입니다.
+       이유: 사용자의 편집 루프가 "파일 고치고 index.html 더블클릭"인데,
+       type="module" 과 fetch() 는 file:// 에서 CORS로 차단됩니다.
+       defer는 순서를 보장하므로 아래 순서가 곧 의존성 순서입니다. -->
+<script defer src="data/config.js"></script>
+<script defer src="data/gallery.js"></script>
+<script defer src="data/posts.js"></script>
+
+<script defer src="js/core.js"></script>
+<script defer src="js/theme.js"></script>
+<script defer src="js/render.js"></script>
+<script defer src="js/slider.js"></script>
+<script defer src="js/widgets.js"></script>
+<script defer src="js/gallery.js"></script>
+<script defer src="js/bgm.js"></script>
+<script defer src="js/cursor.js"></script>
+<script defer src="js/settings.js"></script>
+
+</body>
+</html>
